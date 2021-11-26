@@ -1,31 +1,49 @@
 <script setup>
-import {ref} from "vue"
-import {CellGroup, Field, Form, Button} from "vant"
+import { ref } from "vue"
+import { CellGroup, Field, Form, Button, Notify } from "vant"
 import request from "../utils/request"
 
 const username = ref('')
 const password = ref('')
 const surePassword = ref('')
 
-const onSubmit = (values) => {
+const onSubmit = async (values) => {
   console.log(values)
-}
+  const {
+    username: u,
+    password: p,
+    surePassword,
+  } = values
 
-const onFailed = (values, errors) => {
-  console.log(values, errors)
+  if (surePassword !== p) {
+    Notify({ type: 'warning', message: '两次密码输入不一致' })
+    return
+  }
+
+  const param = {
+    username: u,
+    password: p
+  }
+
+  const data = await request.post('/api/user/register', param)
+
+  if (data.code === 0) {
+    Notify({ type: 'success', message: '注册成功' })
+  } else {
+    Notify({ type: 'warning', message: data.msg })
+  }
 }
 
 </script>
 
 <template>
   <div class="container">
-    <Form @submit="onSubmit" @failed="onFailed">
-      <CellGroup 
-        inset
-      >
-        <Field 
+    <Form @submit="onSubmit">
+      <CellGroup inset>
+        <Field
           label="邮箱"
           placeholder="邮箱"
+          name="username"
           v-model="username"
           :rules="[
             {
@@ -34,9 +52,10 @@ const onFailed = (values, errors) => {
             }
           ]"
         />
-        <Field 
+        <Field
           type="password"
           label="密码"
+          name="password"
           placeholder="密码"
           v-model="password"
           :rules="[
@@ -47,9 +66,10 @@ const onFailed = (values, errors) => {
           ]"
         />
 
-        <Field 
+        <Field
           type="password"
           label="确认密码"
+          name="surePassword"
           placeholder="确认密码"
           v-model="surePassword"
           :rules="[
@@ -61,12 +81,10 @@ const onFailed = (values, errors) => {
         />
       </CellGroup>
 
-
       <div class="button-box">
-        <Button type="primary" block size="small">提交</Button>
+        <Button type="primary" round block size="small" native-type="submit">提交</Button>
       </div>
     </Form>
-
   </div>
 </template>
 
