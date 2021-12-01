@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue"
-import { CellGroup, Field, Form, Button, Notify, Icon } from "vant"
+import { CellGroup, Field, Form, Button, Notify } from "vant"
 import { useRouter } from 'vue-router'
 import request from "../utils/request"
 
@@ -50,14 +50,7 @@ const goLogin = () => {
 
     <Header 
       title="注册"
-    >
-      <!-- 插槽 -->
-      <!-- <template v-slot:right>
-        <div>
-          <Icon name="apps-o" />
-        </div>
-      </template> -->
-    </Header>
+    />
 
     <Form @submit="onSubmit">
       <CellGroup inset>
