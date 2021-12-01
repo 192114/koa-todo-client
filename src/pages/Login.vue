@@ -32,7 +32,8 @@ const onLogin = async () => {
   const data = await request.post('/api/user/login', param)
 
   if (data.code === 0) {
-    Notify({ type: 'success', message: data.msg })
+    Notify({ type: 'success', message: '登录成功' })
+    router.push('/list')
   } else {
     Notify({ type: 'warning', message: data.msg })
   }
@@ -45,7 +46,7 @@ const onLogin = async () => {
     <div class="login-box">
       <p class="title">登录</p>
       <Field v-model="username" placeholder="用户名" />
-      <Field v-model="password" placeholder="密码" />
+      <Field v-model="password" type="password" placeholder="密码" />
       <div class="mt20 register-box">
         <a href="##" class="register-btn" @click.stop.prevent="goRegister">
           没有帐号，去注册

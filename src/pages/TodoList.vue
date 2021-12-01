@@ -1,7 +1,10 @@
 <script setup>
 import {Icon, List, SwipeCell, Cell, Button} from "vant"
 import {ref} from "vue"
+import { useRouter } from "vue-router"
 import Header from "../components/Header.vue"
+
+const router = useRouter()
 
 const todoList = ref([])
 const loading = ref(false)
@@ -11,14 +14,20 @@ const onLoad = async () => {
   
 }
 
+const goUpdateInfo = () => {
+  router.push('/userInfo')
+}
+
 </script>
 
 <template>
   <div class="container">
     <Header title="TODO列表">
-      <div>
-        <Icon name="manage-o" />
-      </div>
+      <template v-slot:right>
+        <div @click.stop="goUpdateInfo">
+          <Icon name="manager-o" />
+        </div>
+      </template>
     </Header>
 
     <div class="scroll-box">

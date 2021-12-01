@@ -33,7 +33,7 @@ const onSubmit = async (values) => {
 
   if (data.code === 0) {
     Notify({ type: 'success', message: '注册成功' })
-    router.push('/useInfo')
+    router.push('/login')
   } else {
     Notify({ type: 'warning', message: data.msg })
   }

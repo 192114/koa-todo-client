@@ -33,6 +33,19 @@ const onSubmit = async (values) => {
   }
 }
 
+const onUploadImg = async (file) => {
+  const fd = new FormData()
+  fd.append('file', file)
+
+  const data = await request.post('/api/auth/uploadImg', fd, {
+    headers: {
+      'Content-Type': 'application/form-data'
+    }
+  })
+
+  console.log(data)
+}
+
 </script>
 
 <template>
@@ -63,7 +76,9 @@ const onSubmit = async (values) => {
           <template #input>
             <Uploader 
               :max-count="1"
+              :max-size="2 * 1024 * 1024"
               v-model="headImgList"
+              :after-read="onUploadImg"
             />
           </template>
         </Field>
