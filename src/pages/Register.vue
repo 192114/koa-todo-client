@@ -1,14 +1,18 @@
 <script setup>
 import { ref } from "vue"
-import { CellGroup, Field, Form, Button, Notify } from "vant"
+import { CellGroup, Field, Form, Button, Notify, Icon } from "vant"
+import { useRouter } from 'vue-router'
 import request from "../utils/request"
+
+import Header from '../components/Header.vue'
+
+const router  = useRouter()
 
 const username = ref('')
 const password = ref('')
 const surePassword = ref('')
 
 const onSubmit = async (values) => {
-  console.log(values)
   const {
     username: u,
     password: p,
@@ -29,15 +33,32 @@ const onSubmit = async (values) => {
 
   if (data.code === 0) {
     Notify({ type: 'success', message: '注册成功' })
+    router.push('/useInfo')
   } else {
     Notify({ type: 'warning', message: data.msg })
   }
+}
+
+const goLogin = () => {
+  router.push('/login')
 }
 
 </script>
 
 <template>
   <div class="container">
+
+    <Header 
+      title="注册"
+    >
+      <!-- 插槽 -->
+      <!-- <template v-slot:right>
+        <div>
+          <Icon name="apps-o" />
+        </div>
+      </template> -->
+    </Header>
+
     <Form @submit="onSubmit">
       <CellGroup inset>
         <Field
@@ -81,6 +102,10 @@ const onSubmit = async (values) => {
         />
       </CellGroup>
 
+      <div class="login-box">
+        <a href="##" class="login-btn" @click.stop.prevent="goLogin">已有帐号，去登录</a>
+      </div>
+
       <div class="button-box">
         <Button type="primary" round block size="small" native-type="submit">提交</Button>
       </div>
@@ -94,7 +119,17 @@ const onSubmit = async (values) => {
   height: 100vh;
   background-color: #f0f2f5;
   box-sizing: border-box;
-  padding-top: 20px;
+  padding-top: 64px;
+}
+
+.login-box {
+  text-align: right;
+  padding: 6px 16px 0px 16px;
+}
+
+.login-btn {
+  color: #1890ff;
+  font-size: 12px;
 }
 
 .button-box {

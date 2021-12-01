@@ -1,10 +1,17 @@
 <script setup>
-import request from '../utils/request'
 import {ref} from "vue"
 import {Button, Field, Notify } from "vant"
+import { useRouter } from 'vue-router'
+import request from '../utils/request'
+
+const router = useRouter()
 
 const username = ref("")
 const password = ref("")
+
+const goRegister = () => {
+  router.push('/register')
+}
 
 const onLogin = async () => {
   const param = {
@@ -39,7 +46,12 @@ const onLogin = async () => {
       <p class="title">登录</p>
       <Field v-model="username" placeholder="用户名" />
       <Field v-model="password" placeholder="密码" />
-      <Button type="primary" text="按钮" size="small" block class="mt20" @click="onLogin" />
+      <div class="mt20 register-box">
+        <a href="##" class="register-btn" @click.stop.prevent="goRegister">
+          没有帐号，去注册
+        </a>
+      </div>
+      <Button type="primary" text="登录" size="small" block class="mt20" @click="onLogin" />
     </div>
   </div>
   
@@ -66,6 +78,15 @@ const onLogin = async () => {
   text-align: center;
   font-size: 20px;
   color: #1890ff;
+}
+
+.register-box {
+  text-align: right;
+}
+
+.register-btn {
+  color: #1890ff;
+  font-size: 12px;
 }
 
 .mt20 {
