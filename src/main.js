@@ -4,6 +4,7 @@ import App from './App.vue'
 import Login from './pages/Login.vue'
 import Register from './pages/Register.vue'
 import UserInfo from './pages/UserInfo.vue'
+import TodoList from './pages/TodoList.vue'
 
 const routes = [
   {
@@ -17,6 +18,10 @@ const routes = [
   {
     path: '/userInfo',
     component: UserInfo,
+  },
+  {
+    path: '/list',
+    component: TodoList,
   },
 ]
 
