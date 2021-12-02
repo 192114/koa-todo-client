@@ -1,49 +1,66 @@
 <script setup>
 import {ref} from 'vue'
+import {useRouter} from 'vue-router'
 import {Form, Field, Uploader, Button, Notify, CellGroup} from "vant"
 import request from "../utils/request"
 
 import Header from '../components/Header.vue'
 
+const router = useRouter()
+
 const nickname = ref('')
 const headImgList = ref([])
+const avatarUrl = ref('')
 
 const onSubmit = async (values) => {
   const {
     nickname: n,
-    headImgList: imgList,
   } = values
 
-  if (!imgList[0]) {
+  if (!avatarUrl.value) {
     Notify({ type: 'warning', message: '请上传头像' })
     return
   }
 
   const param = {
     nickname: n,
-    headImg: imgList[0],
+    headImg: avatarUrl.value,
   }
 
-  const data = await request.post('/api/user/updateInfo', param)
+  const data = await request.post('/api/auth/user/updateInfo', param)
 
   if (data.code === 0) {
-    Notify({ type: 'success', message: '注册成功' })
+    Notify({ type: 'success', message: '保存成功' })
+    router.back()
   } else {
     Notify({ type: 'warning', message: data.msg })
   }
 }
 
-const onUploadImg = async (file) => {
+const onUploadImg = async (param) => {
   const fd = new FormData()
-  fd.append('file', file)
+  fd.append('file', param.file)
+
+  param.message = '上传中'
+  param.status = 'uploading'
 
   const data = await request.post('/api/auth/uploadImg', fd, {
     headers: {
-      'Content-Type': 'application/form-data'
+      'Content-Type': 'multipart/form-data'
     }
   })
 
-  console.log(data)
+  if (data.code === 0) {
+    Notify({ type: 'success', message: '上传成功' })
+    param.message = '上传成功'
+    param.status = 'done'
+    const { url } = data.data
+    avatarUrl.value = url
+  } else {
+    Notify({ type: 'warning', message: data.msg })
+    param.message = '上传失败'
+    param.status = 'failed'
+  }
 }
 
 </script>
@@ -85,7 +102,7 @@ const onUploadImg = async (file) => {
       </CellGroup>
 
       <div class="button-box">
-        <Button type="primary" block size="small">提交</Button>
+        <Button type="primary" block size="small" native-type="submit">提交</Button>
       </div>
     </Form>
   </div>
