@@ -21,7 +21,7 @@ const goUpdateInfo = () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container with-head">
     <Header title="TODO列表">
       <template v-slot:right>
         <div @click.stop="goUpdateInfo">
@@ -57,14 +57,6 @@ const goUpdateInfo = () => {
 </template>
 
 <style scoped>
-.container {
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--main-bg-color);
-  box-sizing: border-box;
-  padding-top: var(--space-with-head);
-}
-
 .scroll-box {
   width: 100%;
   height: 100%;

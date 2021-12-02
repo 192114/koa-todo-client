@@ -1,0 +1,31 @@
+:root {
+  --main-bg-color: #f0f2f5;
+  --main-text-color: #1c1e21;
+  --primary-color: #1989fa;
+  --success-color: #07c160;
+  --warn-color: #ff976a;
+  --danger-color: #ee0a24;
+  --text-color-1: #969799;
+  --text-color-2: #c8c9cc;
+  --font-size-large: 20px;
+  --font-size-big: 18px;
+  --font-size-middle: 16px;
+  --font-size-base: 14px;
+  --font-size-small: 12px;
+  --padding-large: 16px;
+  --padding-base: 12px;
+  --padding-small: 8px;
+  --space-large: 16px;
+  --space-base: 12px;
+  --space-small: 8px;
+  --space-with-head: 64px;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}

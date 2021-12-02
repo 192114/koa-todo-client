@@ -84,7 +84,7 @@ const onUploadImg = async (param) => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container with-head">
     <Header 
       title="个人信息"
     />
@@ -128,15 +128,6 @@ const onUploadImg = async (param) => {
 </template>
 
 <style scoped>
-.container {
-  width: 100vw;
-  height: 100vh;
-  background-color: #f0f2f5;
-  box-sizing: border-box;
-  padding-top: 20px;
-  padding-top: 64px;
-}
-
 .button-box {
   padding: 16px;
 }

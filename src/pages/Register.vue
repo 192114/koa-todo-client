@@ -46,7 +46,7 @@ const goLogin = () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container with-head">
 
     <Header 
       title="注册"
@@ -107,14 +107,6 @@ const goLogin = () => {
 </template>
 
 <style scoped>
-.container {
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--main-bg-color);
-  box-sizing: border-box;
-  padding-top: var(--space-with-head);
-}
-
 .login-box {
   text-align: right;
   padding: 6px 16px 0px 16px;
