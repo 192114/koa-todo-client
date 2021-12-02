@@ -1,7 +1,7 @@
 <script setup>
-import {ref} from 'vue'
-import {useRouter} from 'vue-router'
-import {Form, Field, Uploader, Button, Notify, CellGroup} from "vant"
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { Form, Field, Uploader, Button, Notify, CellGroup } from "vant"
 import Compressor from 'compressorjs'
 import request from "../utils/request"
 
@@ -14,6 +14,27 @@ const headImgList = ref([])
 const avatarUrl = ref('')
 
 const submitLoading = ref(false)
+
+onMounted(() => {
+  const getUserInfoRes = async () => {
+    const data = await request.post('/api/auth/user/getUserInfo')
+
+    if (data.code === 0) {
+      const { headImg: h = '', nickname: n = '' } = data.data
+      nickname.value = n
+      avatarUrl.value = h
+      if (h) {
+        headImgList.value = [{
+          url: h,
+          status: 'done',
+          message: '',
+        }]
+      }
+    }
+  }
+
+  getUserInfoRes()
+})
 
 const onSubmit = async (values) => {
   const {
@@ -91,9 +112,7 @@ const onUploadImg = async (param) => {
 
 <template>
   <div class="container with-head">
-    <Header 
-      title="个人信息"
-    />
+    <Header title="个人信息" />
 
     <Form @submit="onSubmit">
       <CellGroup inset>
@@ -110,12 +129,9 @@ const onUploadImg = async (param) => {
           ]"
         />
 
-        <Field
-          label="头像"
-          name="headImgList"
-        >
+        <Field label="头像" name="headImgList">
           <template #input>
-            <Uploader 
+            <Uploader
               :max-count="1"
               :max-size="2 * 1024 * 1024"
               v-model="headImgList"

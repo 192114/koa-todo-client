@@ -75,7 +75,7 @@ const onSubmit = async () => {
 
   submitLoading.value = true
 
-  const data = await request.post('/api/auth/add', param)
+  const data = await request.post('/api/auth/todo/add', param)
   
   submitLoading.value = false
 
