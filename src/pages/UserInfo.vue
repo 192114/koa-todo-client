@@ -2,6 +2,7 @@
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {Form, Field, Uploader, Button, Notify, CellGroup} from "vant"
+import Compressor from 'compressorjs'
 import request from "../utils/request"
 
 import Header from '../components/Header.vue'
@@ -37,12 +38,31 @@ const onSubmit = async (values) => {
   }
 }
 
-const onUploadImg = async (param) => {
-  const fd = new FormData()
-  fd.append('file', param.file)
-
+const onBeforeLoad = async (param) => {
+  // 默认开启 checkOrientation 选项 修改图片为正确的方向
+  console.log(param)
   param.message = '上传中'
   param.status = 'uploading'
+
+  return new Promise(resolve => {
+    new Compressor(param, {
+      quality: 0.6,
+      success: (blob) => {
+        // blob -> file 
+        const f = new File([blob], blob.name, { type: blob.type, lastModified: blob.lastModified })
+        resolve(f)
+      },
+      error(err) {
+        Notify({ type: 'warning', message: err.message })
+      }
+    })
+  })
+}
+
+const onUploadImg = async (param) => {
+  console.log(param)
+  const fd = new FormData()
+  fd.append('file', param.file)
 
   const data = await request.post('/api/auth/uploadImg', fd, {
     headers: {
@@ -95,6 +115,7 @@ const onUploadImg = async (param) => {
               :max-count="1"
               :max-size="2 * 1024 * 1024"
               v-model="headImgList"
+              :before-read="onBeforeLoad"
               :after-read="onUploadImg"
             />
           </template>
