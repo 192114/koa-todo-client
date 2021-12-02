@@ -13,6 +13,8 @@ const nickname = ref('')
 const headImgList = ref([])
 const avatarUrl = ref('')
 
+const submitLoading = ref(false)
+
 const onSubmit = async (values) => {
   const {
     nickname: n,
@@ -28,7 +30,11 @@ const onSubmit = async (values) => {
     headImg: avatarUrl.value,
   }
 
+  submitLoading.value = false
+
   const data = await request.post('/api/auth/user/updateInfo', param)
+
+  submitLoading.value = true
 
   if (data.code === 0) {
     Notify({ type: 'success', message: '保存成功' })
@@ -121,7 +127,7 @@ const onUploadImg = async (param) => {
       </CellGroup>
 
       <div class="button-box">
-        <Button type="primary" block size="small" native-type="submit">提交</Button>
+        <Button type="primary" block size="small" native-type="submit" :loading="submitLoading">提交</Button>
       </div>
     </Form>
   </div>
