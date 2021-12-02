@@ -12,6 +12,8 @@ const username = ref('')
 const password = ref('')
 const surePassword = ref('')
 
+const submitLoading = ref(false)
+
 const onSubmit = async (values) => {
   const {
     username: u,
@@ -29,7 +31,11 @@ const onSubmit = async (values) => {
     password: p
   }
 
+  submitLoading.value = true
+
   const data = await request.post('/api/user/register', param)
+
+  submitLoading.value = false
 
   if (data.code === 0) {
     Notify({ type: 'success', message: '注册成功' })
@@ -100,7 +106,7 @@ const goLogin = () => {
       </div>
 
       <div class="button-box">
-        <Button type="primary" round block size="small" native-type="submit">提交</Button>
+        <Button type="primary" round block size="small" native-type="submit" :loading="submitLoading">提交</Button>
       </div>
     </Form>
   </div>

@@ -9,6 +9,8 @@ const router = useRouter()
 const username = ref("")
 const password = ref("")
 
+const loginLoading = ref(false)
+
 const goRegister = () => {
   router.push('/register')
 }
@@ -29,7 +31,11 @@ const onLogin = async () => {
     return
   }
 
+  loginLoading.value = true
+
   const data = await request.post('/api/user/login', param)
+
+  loginLoading.value = false
 
   if (data.code === 0) {
     Notify({ type: 'success', message: '登录成功' })
@@ -52,7 +58,7 @@ const onLogin = async () => {
           没有帐号，去注册
         </a>
       </div>
-      <Button type="primary" text="登录" size="small" block class="mt20" @click="onLogin" />
+      <Button type="primary" text="登录" size="small" block class="mt20" @click="onLogin" :loading="loginLoading" />
     </div>
   </div>
   
