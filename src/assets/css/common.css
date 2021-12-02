@@ -8,3 +8,8 @@
 .container.with-head {
   padding-top: var(--space-with-head);
 }
+
+/* 模拟field label 样式 使表单样式统一 */
+.field-label {
+  color: var(--van-field-label-color)
+}

@@ -129,6 +129,6 @@ const onUploadImg = async (param) => {
 
 <style scoped>
 .button-box {
-  padding: 16px;
+  padding: var(--padding-large);
 }
 </style>

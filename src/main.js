@@ -5,7 +5,9 @@ import Login from './pages/Login.vue'
 import Register from './pages/Register.vue'
 import UserInfo from './pages/UserInfo.vue'
 import TodoList from './pages/TodoList.vue'
+import EditTodo from './pages/EditTodo.vue'
 
+import './assets/css/root.css'
 import './assets/css/common.css'
 
 const routes = [
@@ -24,6 +26,10 @@ const routes = [
   {
     path: '/list',
     component: TodoList,
+  },
+  {
+    path: '/add',
+    component: EditTodo,
   },
 ]
 

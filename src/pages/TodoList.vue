@@ -18,6 +18,10 @@ const goUpdateInfo = () => {
   router.push('/userInfo')
 }
 
+const onGoAdd = () => {
+  router.push('/add')
+}
+
 </script>
 
 <template>
@@ -50,7 +54,10 @@ const goUpdateInfo = () => {
       </List>
     </div>
 
-    <div class="fixed-add">
+    <div 
+      class="fixed-add"
+      @click="onGoAdd"  
+    >
       <Icon name="plus" />
     </div>
   </div>
