@@ -110,9 +110,9 @@ const goLogin = () => {
 .container {
   width: 100vw;
   height: 100vh;
-  background-color: #f0f2f5;
+  background-color: var(--main-bg-color);
   box-sizing: border-box;
-  padding-top: 64px;
+  padding-top: var(--space-with-head);
 }
 
 .login-box {
@@ -121,11 +121,11 @@ const goLogin = () => {
 }
 
 .login-btn {
-  color: #1890ff;
-  font-size: 12px;
+  color: var(--primary-color);
+  font-size: var(--font-size-small);
 }
 
 .button-box {
-  padding: 16px;
+  padding: var(--padding-large);
 }
 </style>

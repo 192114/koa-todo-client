@@ -6,6 +6,8 @@ import Register from './pages/Register.vue'
 import UserInfo from './pages/UserInfo.vue'
 import TodoList from './pages/TodoList.vue'
 
+import './assets/css/common.css'
+
 const routes = [
   {
     path: '/login',

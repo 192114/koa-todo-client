@@ -40,7 +40,6 @@ const onSubmit = async (values) => {
 
 const onBeforeLoad = async (param) => {
   // 默认开启 checkOrientation 选项 修改图片为正确的方向
-  console.log(param)
   param.message = '上传中'
   param.status = 'uploading'
 
@@ -60,7 +59,6 @@ const onBeforeLoad = async (param) => {
 }
 
 const onUploadImg = async (param) => {
-  console.log(param)
   const fd = new FormData()
   fd.append('file', param.file)
 

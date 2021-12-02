@@ -65,20 +65,20 @@ const onLogin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f2f5;
+  background-color: var(--main-bg-color);
 }
 
 .login-box {
   width: 80%;
   background-color: #fff;
   border-radius: 6px;
-  padding: 12px;
+  padding: var(--padding-base);
 }
 
 .title {
   text-align: center;
-  font-size: 20px;
-  color: #1890ff;
+  font-size: var(--font-size-large);
+  color: var(--primary-color);
 }
 
 .register-box {
@@ -86,8 +86,8 @@ const onLogin = async () => {
 }
 
 .register-btn {
-  color: #1890ff;
-  font-size: 12px;
+  color: var(--primary-color);
+  font-size: var(--font-size-small);
 }
 
 .mt20 {

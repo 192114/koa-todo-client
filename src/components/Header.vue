@@ -52,8 +52,8 @@ const onBack = () => {
 .header-title {
   text-align: center;
   line-height: 46px;
-  font-size: 14px;
-  color: #24292f;
+  font-size: var(--font-size-middle);
+  color: var(--main-text-color);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -64,6 +64,7 @@ const onBack = () => {
   width: 46px;
   text-align: center;
   line-height: 46px;
-  font-size: 20px;
+  font-size: var(--font-size-large);
+  color: var(--main-text-color);
 }
 </style>

@@ -60,9 +60,9 @@ const goUpdateInfo = () => {
 .container {
   width: 100vw;
   height: 100vh;
-  background-color: #f0f2f5;
+  background-color: var(--main-bg-color);
   box-sizing: border-box;
-  padding-top: 64px;
+  padding-top: var(--space-with-head);
 }
 
 .scroll-box {
@@ -83,6 +83,6 @@ const goUpdateInfo = () => {
   justify-content: center;
   font-size: 30px;
   color: #fff;
-  background-color: #1890ff;
+  background-color: var(--primary-color);
 }
 </style>
