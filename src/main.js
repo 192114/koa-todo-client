@@ -17,6 +17,7 @@ const EditTodo = () => import('./pages/EditTodo.vue')
 
 import './assets/css/root.css'
 import './assets/css/common.css'
+import './assets/css/transition.css'
 
 const routes = [
   {
