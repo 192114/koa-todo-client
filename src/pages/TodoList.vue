@@ -1,8 +1,11 @@
 <script setup>
-import {Icon, List, SwipeCell, Cell, Button} from "vant"
-import {ref} from "vue"
+import { Icon, List, SwipeCell, Cell, Button, Tag, Popup, Row, Col } from "vant"
+import { ref } from "vue"
 import { useRouter } from "vue-router"
 import Header from "../components/Header.vue"
+import request from "../utils/request"
+
+import { importanceValueToColorMap } from '../constants/importanceColorMap'
 
 const router = useRouter()
 
@@ -10,8 +13,23 @@ const todoList = ref([])
 const loading = ref(false)
 const finished = ref(false)
 
+const curTodoItem = ref({})
+const maskShow = ref(false)
+
 const onLoad = async () => {
-  
+  const param = {
+
+  }
+
+  loading.value = true
+
+  const data = await request.post('/api/auth/todo/query', param)
+
+  if (data.code === 0) {
+    todoList.value = data.data
+  }
+
+  loading.value = false
 }
 
 const goUpdateInfo = () => {
@@ -20,6 +38,12 @@ const goUpdateInfo = () => {
 
 const onGoAdd = () => {
   router.push('/add')
+}
+
+const viewDetail = (cur) => {
+  console.log(cur)
+  // curTodoItem.value = cur
+  maskShow.value = true
 }
 
 </script>
@@ -35,31 +59,40 @@ const onGoAdd = () => {
     </Header>
 
     <div class="scroll-box">
-      <List
-        v-model:loading="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-      >
-        <SwipeCell>
+      <List v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <SwipeCell v-for="item in todoList" key="_id">
           <template #left>
-            <Button type="success" square> 完成 </Button>
+            <Button class="swiper-button" type="success" square>完成</Button>
           </template>
-          <Cell :border="false" square> 内容内容 </Cell>
+          <Cell square :title="item.title" :label="item.deadline" @click="viewDetail(item)">
+            <Tag :type="importanceValueToColorMap[item.importanceValue]">{{ item.importanceName }}</Tag>
+          </Cell>
           <template #right>
-            <Button type="primary" square> 修改 </Button>
-            <Button type="danger" square> 删除 </Button>
+            <Button class="swiper-button" type="primary" square>修改</Button>
+            <Button class="swiper-button" type="danger" square>删除</Button>
           </template>
         </SwipeCell>
       </List>
     </div>
 
-    <div 
-      class="fixed-add"
-      @click="onGoAdd"  
-    >
+    <div class="fixed-add" @click="onGoAdd">
       <Icon name="plus" />
     </div>
+
+    <!-- 点击查看详细 -->
+    <Popup v-model="maskShow" round>
+      <Row gutter="20">
+        <Col span="8">重要程度：</Col>
+        <Col span="16">
+          <Tag
+            :type="importanceValueToColorMap[curTodoItem.importanceValue]"
+          >{{ curTodoItem.importanceName }}</Tag>
+        </Col>
+
+        <Col span="8">截止时间：</Col>
+        <Col span="16">{{ curTodoItem.deadline }}</Col>
+      </Row>
+    </Popup>
   </div>
 </template>
 
@@ -83,5 +116,9 @@ const onGoAdd = () => {
   font-size: 30px;
   color: #fff;
   background-color: var(--primary-color);
+}
+
+.swiper-button {
+  height: 100%;
 }
 </style>

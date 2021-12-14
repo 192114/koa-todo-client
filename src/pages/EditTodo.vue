@@ -18,19 +18,9 @@ import request from '../utils/request'
 
 import Header from '../components/Header.vue'
 
+import { actions, importanceValueToColorMap } from '../constants/importanceColorMap'
+
 const router = useRouter()
-
-const actions = [
-  { name: '优先', value: 1 },
-  { name: '重要', value: 2 },
-  { name: '普通', value: 3 },
-]
-
-const importanceValueToColorMap = {
-  1: 'danger',
-  2: 'warning',
-  3: 'primary',
-}
 
 const title = ref('')
 const content = ref('')
@@ -68,7 +58,7 @@ const onSubmit = async () => {
   const param = {
     title: title.value,
     content: content.value,
-    importanceType: importance.value.value,
+    importanceValue: importance.value.value,
     importanceName: importance.value.name,
     deadline: deadline.value,
   }
@@ -76,7 +66,7 @@ const onSubmit = async () => {
   submitLoading.value = true
 
   const data = await request.post('/api/auth/todo/add', param)
-  
+
   submitLoading.value = false
 
   if (data.code === 0) {
@@ -89,76 +79,59 @@ const onSubmit = async () => {
 </script>
 
 <template>
-<div class="container with-head">
-  <Header title="新增待办" />
+  <div class="container with-head">
+    <Header title="新增待办" />
 
-  <Form @submit="onSubmit">
-    <CellGroup inset>
-      <Field 
-        label="项目名称"
-        maxlength="30"
-        clearable
-        name="title"
-        v-model="title"
-        placeholder="项目名称"
-        show-word-limit
-      />
-      <Field 
-        label="项目详情"
-        maxlength="150"
-        clearable
-        name="content"
-        v-model="content"
-        type="textarea"
-        autosize
-        placeholder="项目内容"
-        show-word-limit
-      />
+    <Form @submit="onSubmit">
+      <CellGroup inset>
+        <Field
+          label="项目名称"
+          maxlength="30"
+          clearable
+          name="title"
+          v-model="title"
+          placeholder="项目名称"
+          show-word-limit
+        />
+        <Field
+          label="项目详情"
+          maxlength="150"
+          clearable
+          name="content"
+          v-model="content"
+          type="textarea"
+          autosize
+          placeholder="项目内容"
+          show-word-limit
+        />
 
-      <Cell 
-        title="重要程度"
-        is-link
-        title-class="field-label"
-        @click="actionShow = true"
-      >
-        <!-- 右侧value 插槽 -->
-        <template #value>
-          <Tag
-            :type="importanceValueToColorMap[importance.value]"
-          >
-            {{importance.name}}
-          </Tag>
-        </template>
-      </Cell>
+        <Cell title="重要程度" is-link title-class="field-label" @click="actionShow = true">
+          <!-- 右侧value 插槽 -->
+          <template #value>
+            <Tag :type="importanceValueToColorMap[importance.value]">{{ importance.name }}</Tag>
+          </template>
+        </Cell>
 
-      <Cell 
-        title="截止日期"
-        is-link
-        title-class="field-label"
-        @click="calendarShow=true"
-        :value="deadline"
-      />
-    </CellGroup>
+        <Cell
+          title="截止日期"
+          is-link
+          title-class="field-label"
+          @click="calendarShow = true"
+          :value="deadline"
+        />
+      </CellGroup>
 
-    <div class="button-box">
-      <Button type="primary" block size="small" native-type="submit" :loading="submitLoading">提交</Button>
-    </div>
+      <div class="button-box">
+        <Button type="primary" block size="small" native-type="submit" :loading="submitLoading">提交</Button>
+      </div>
+    </Form>
 
-  </Form>
-</div>
+    <!-- 重要程度面板 -->
+    <ActionSheet v-model:show="actionShow" :actions="actions" @select="onChooseImportance" />
 
-<!-- 重要程度面板 -->
-<ActionSheet
-  v-model:show="actionShow" 
-  :actions="actions" 
-  @select="onChooseImportance" 
-/>
-
-<!-- 截至日期 -->
-<Calendar 
-  v-model:show="calendarShow"
-  @confirm="onChooseDate"
-/>
+    <!-- 截至日期 -->
+    <Calendar v-model:show="calendarShow" @confirm="onChooseDate" />
+  </div>
 </template>
 
 <style scoped>
