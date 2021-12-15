@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import {ref, onMounted} from 'vue'
 import {
   Form,
   CellGroup,
@@ -11,20 +11,21 @@ import {
   Calendar,
   Notify,
 } from 'vant'
-import { format } from 'date-fns'
-import { useRouter } from 'vue-router'
+import {format} from 'date-fns'
+import {useRouter, useRoute} from 'vue-router'
 
 import request from '../utils/request'
 
 import Header from '../components/Header.vue'
 
-import { actions, importanceValueToColorMap } from '../constants/importanceColorMap'
+import {actions, importanceValueToColorMap} from '../constants/importanceColorMap'
 
 const router = useRouter()
+const route = useRoute()
 
 const title = ref('')
 const content = ref('')
-const importance = ref({ name: '普通', value: 3 })
+const importance = ref({name: '普通', value: 3})
 const deadline = ref()
 
 const actionShow = ref(false)
@@ -43,15 +44,15 @@ const onChooseDate = (value) => {
 
 const onSubmit = async () => {
   if (!title.value) {
-    Notify({ type: 'warning', message: '请输入标题' })
+    Notify({type: 'warning', message: '请输入标题'})
     return
   }
   if (!content.value) {
-    Notify({ type: 'warning', message: '请输入内容' })
+    Notify({type: 'warning', message: '请输入内容'})
     return
   }
   if (!deadline.value) {
-    Notify({ type: 'warning', message: '请选择截止日期' })
+    Notify({type: 'warning', message: '请选择截止日期'})
     return
   }
 
@@ -70,12 +71,29 @@ const onSubmit = async () => {
   submitLoading.value = false
 
   if (data.code === 0) {
-    Notify({ type: 'success', message: '保存成功' })
+    Notify({type: 'success', message: '保存成功'})
     router.back()
   } else {
-    Notify({ type: 'warning', message: data.msg })
+    Notify({type: 'warning', message: data.msg})
   }
 }
+
+onMounted(() => {
+  const { id } = route.params
+  if (id) {
+    (async () => {
+      const param = {
+        id,
+      }
+      const data = await request.post('/api/auth/todo/getDetailById', param)
+
+      if (data.code === 0) {
+        
+      }
+    })()
+  }
+
+})
 </script>
 
 <template>
@@ -108,7 +126,7 @@ const onSubmit = async () => {
         <Cell title="重要程度" is-link title-class="field-label" @click="actionShow = true">
           <!-- 右侧value 插槽 -->
           <template #value>
-            <Tag :type="importanceValueToColorMap[importance.value]">{{ importance.name }}</Tag>
+            <Tag :type="importanceValueToColorMap[importance.value]">{{importance.name}}</Tag>
           </template>
         </Cell>
 

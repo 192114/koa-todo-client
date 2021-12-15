@@ -3,12 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 
 // 动态导入
-// import Login from './pages/Login.vue'
-// import Register from './pages/Register.vue'
-// import UserInfo from './pages/UserInfo.vue'
-// import TodoList from './pages/TodoList.vue'
-// import EditTodo from './pages/EditTodo.vue'
-
 const Login = () => import('./pages/Login.vue')
 const Register = () => import('./pages/Register.vue')
 const UserInfo = () => import('./pages/UserInfo.vue')
@@ -38,6 +32,10 @@ const routes = [
   },
   {
     path: '/add',
+    component: EditTodo,
+  },
+  {
+    path: '/edit/:id',
     component: EditTodo,
   },
 ]

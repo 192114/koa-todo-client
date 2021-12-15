@@ -1,11 +1,11 @@
 <script setup>
-import { Icon, List, SwipeCell, Cell, Button, Tag, Popup, Row, Col } from "vant"
-import { ref } from "vue"
-import { useRouter } from "vue-router"
+import {Icon, List, SwipeCell, Cell, Button, Tag, Popup, Row, Col, Dialog} from "vant"
+import {ref} from "vue"
+import {useRouter} from "vue-router"
 import Header from "../components/Header.vue"
 import request from "../utils/request"
 
-import { importanceValueToColorMap } from '../constants/importanceColorMap'
+import {importanceValueToColorMap} from '../constants/importanceColorMap'
 
 const router = useRouter()
 
@@ -42,8 +42,33 @@ const onGoAdd = () => {
 
 const viewDetail = (cur) => {
   console.log(cur)
-  // curTodoItem.value = cur
+  curTodoItem.value = cur
   maskShow.value = true
+}
+
+const onComplete = (cur) => {
+  Dialog.confirm({
+    title: cur.title,
+    message: cur.content,
+    beforeClose: async (action) => {
+      if (action === 'confirm') {
+        const param = {
+          id: cur._id,
+          complete: 1,
+        }
+        const data = await request.post('/api/auth/todo/update', param)
+
+        if (data.code === 0) {
+          todoList.value = todoList.value.filter(item => item._id !== cur._id)
+        }
+      }
+      return true
+    }
+  })
+}
+
+const onUpdate = (cur) => {
+  router.push(`/edit/${cur._id}`)
 }
 
 </script>
@@ -62,13 +87,23 @@ const viewDetail = (cur) => {
       <List v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <SwipeCell v-for="item in todoList" key="_id">
           <template #left>
-            <Button class="swiper-button" type="success" square>完成</Button>
+            <Button
+              class="swiper-button"
+              type="success"
+              square
+              @click.stop.prevent="onComplete(item)"
+            >完成</Button>
           </template>
           <Cell square :title="item.title" :label="item.deadline" @click="viewDetail(item)">
-            <Tag :type="importanceValueToColorMap[item.importanceValue]">{{ item.importanceName }}</Tag>
+            <Tag :type="importanceValueToColorMap[item.importanceValue]">{{item.importanceName}}</Tag>
           </Cell>
           <template #right>
-            <Button class="swiper-button" type="primary" square>修改</Button>
+            <Button
+              class="swiper-button"
+              type="primary"
+              square
+              @click.stop.prevent="onUpdate(item)"
+            >修改</Button>
             <Button class="swiper-button" type="danger" square>删除</Button>
           </template>
         </SwipeCell>
@@ -80,18 +115,29 @@ const viewDetail = (cur) => {
     </div>
 
     <!-- 点击查看详细 -->
-    <Popup v-model="maskShow" round>
-      <Row gutter="20">
-        <Col span="8">重要程度：</Col>
-        <Col span="16">
-          <Tag
-            :type="importanceValueToColorMap[curTodoItem.importanceValue]"
-          >{{ curTodoItem.importanceName }}</Tag>
-        </Col>
-
-        <Col span="8">截止时间：</Col>
-        <Col span="16">{{ curTodoItem.deadline }}</Col>
-      </Row>
+    <Popup v-model:show="maskShow" round>
+      <div class="popup-body">
+        <Row gutter="20" class="popup-body-item">
+          <Col span="8">标题：</Col>
+          <Col span="16">{{curTodoItem.title}}</Col>
+        </Row>
+        <Row gutter="20" class="popup-body-item">
+          <Col span="8">重要程度：</Col>
+          <Col span="16">
+            <Tag
+              :type="importanceValueToColorMap[curTodoItem.importanceValue]"
+            >{{curTodoItem.importanceName}}</Tag>
+          </Col>
+        </Row>
+        <Row gutter="20" class="popup-body-item">
+          <Col span="8">截止时间：</Col>
+          <Col span="16">{{curTodoItem.deadline}}</Col>
+        </Row>
+        <Row gutter="20" class="popup-body-item">
+          <Col span="8">内容：</Col>
+          <Col span="16">{{curTodoItem.content}}</Col>
+        </Row>
+      </div>
     </Popup>
   </div>
 </template>
@@ -120,5 +166,14 @@ const viewDetail = (cur) => {
 
 .swiper-button {
   height: 100%;
+}
+
+.popup-body {
+  width: 340px;
+  padding: 16px;
+}
+
+.popup-body-item {
+  margin-top: 12px;
 }
 </style>
