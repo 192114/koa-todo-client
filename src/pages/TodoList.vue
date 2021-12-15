@@ -135,7 +135,7 @@ const onUpdate = (cur) => {
         </Row>
         <Row gutter="20" class="popup-body-item">
           <Col span="8">内容：</Col>
-          <Col span="16">{{curTodoItem.content}}</Col>
+          <Col span="16" class="wrap-style">{{curTodoItem.content}}</Col>
         </Row>
       </div>
     </Popup>
@@ -175,5 +175,9 @@ const onUpdate = (cur) => {
 
 .popup-body-item {
   margin-top: 12px;
+}
+
+.wrap-style {
+  white-space: pre-wrap;
 }
 </style>
