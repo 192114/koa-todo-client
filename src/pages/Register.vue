@@ -58,7 +58,7 @@ const goLogin = () => {
       title="注册"
     />
 
-    <Form @submit="onSubmit">
+    <Form @submit="onSubmit" class="mt12">
       <CellGroup inset>
         <Field
           label="邮箱"

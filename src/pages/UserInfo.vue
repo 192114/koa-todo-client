@@ -114,7 +114,7 @@ const onUploadImg = async (param) => {
   <div class="container with-head">
     <Header title="个人信息" />
 
-    <Form @submit="onSubmit">
+    <Form @submit="onSubmit" class="mt12">
       <CellGroup inset>
         <Field
           label="用户昵称"

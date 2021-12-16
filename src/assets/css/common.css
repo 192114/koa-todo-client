@@ -13,3 +13,7 @@
 .field-label {
   color: var(--van-field-label-color)
 }
+
+.mt12 {
+  margin-top: 12px;
+}

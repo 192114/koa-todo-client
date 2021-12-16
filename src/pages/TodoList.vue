@@ -1,5 +1,5 @@
 <script setup>
-import {Icon, List, SwipeCell, Cell, Button, Tag, Popup, Row, Col, Dialog, DropdownMenu, DropdownItem} from "vant"
+import {Icon, List, SwipeCell, Cell, Button, Tag, Popup, Row, Col, Dialog, DropdownMenu, DropdownItem, Empty} from "vant"
 import {ref, watch} from "vue"
 import {useRouter} from "vue-router"
 import Header from "../components/Header.vue"
@@ -137,7 +137,7 @@ const onDel = (cur) => {
       </template>
     </Header>
 
-    <DropdownMenu>
+    <DropdownMenu style="margin-top: 6px;">
       <DropdownItem :options="sortActionsList" v-model="sortActions" />
       <DropdownItem :options="sortCompleteList" v-model="sortComplete" />
     </DropdownMenu>
@@ -167,6 +167,7 @@ const onDel = (cur) => {
           </template>
         </SwipeCell>
       </List>
+      <Empty description="暂无数据" v-if="todoList.length === 0" />
     </div>
 
     <div class="fixed-add" @click="onGoAdd">
@@ -204,7 +205,8 @@ const onDel = (cur) => {
 <style scoped>
 .scroll-box {
   width: 100%;
-  height: calc(100% - 48px);
+  height: calc(100% - 60px);
+  margin-top: 6px;
 }
 
 .fixed-add {
