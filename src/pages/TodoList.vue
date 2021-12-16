@@ -1,13 +1,42 @@
 <script setup>
-import {Icon, List, SwipeCell, Cell, Button, Tag, Popup, Row, Col, Dialog} from "vant"
-import {ref} from "vue"
+import {Icon, List, SwipeCell, Cell, Button, Tag, Popup, Row, Col, Dialog, DropdownMenu, DropdownItem} from "vant"
+import {ref, watch} from "vue"
 import {useRouter} from "vue-router"
 import Header from "../components/Header.vue"
 import request from "../utils/request"
 
-import {importanceValueToColorMap} from '../constants/importanceColorMap'
+import {importanceValueToColorMap, actions} from '../constants/importanceColorMap'
+
+const sortActionsList = [
+  {
+    value: null,
+    text: '全部',
+  },
+  ...actions.map(item => ({
+    value: item.value,
+    text: item.name,
+  }))
+]
+
+const sortCompleteList = [
+  {
+    value: null,
+    text: '全部',
+  },
+  {
+    value: 0,
+    text: '未完成',
+  },
+  {
+    value: 1,
+    text: '已完成',
+  }
+]
 
 const router = useRouter()
+
+const sortActions = ref(null)
+const sortComplete = ref(null)
 
 const todoList = ref([])
 const loading = ref(false)
@@ -18,7 +47,8 @@ const maskShow = ref(false)
 
 const onLoad = async () => {
   const param = {
-
+    complete: sortComplete.value,
+    importanceValue: sortActions.value,
   }
 
   loading.value = true
@@ -31,6 +61,10 @@ const onLoad = async () => {
 
   loading.value = false
 }
+
+watch([sortComplete, sortActions], () => {
+  onLoad()
+})
 
 const goUpdateInfo = () => {
   router.push('/userInfo')
@@ -53,13 +87,13 @@ const onComplete = (cur) => {
     beforeClose: async (action) => {
       if (action === 'confirm') {
         const param = {
-          id: cur._id,
+          id: cur.id,
           complete: 1,
         }
         const data = await request.post('/api/auth/todo/update', param)
 
         if (data.code === 0) {
-          todoList.value = todoList.value.filter(item => item._id !== cur._id)
+          todoList.value = todoList.value.filter(item => item.id !== cur.id)
         }
       }
       return true
@@ -68,7 +102,27 @@ const onComplete = (cur) => {
 }
 
 const onUpdate = (cur) => {
-  router.push(`/edit/${cur._id}`)
+  router.push(`/edit/${cur.id}`)
+}
+
+const onDel = (cur) => {
+  Dialog.confirm({
+    title: cur.title,
+    message: cur.content,
+    beforeClose: async (action) => {
+      if (action === 'confirm') {
+        const param = {
+          id: cur.id,
+        }
+        const data = await request.post('/api/auth/todo/del', param)
+
+        if (data.code === 0) {
+          todoList.value = todoList.value.filter(item => item.id !== cur.id)
+        }
+      }
+      return true
+    }
+  })
 }
 
 </script>
@@ -83,9 +137,14 @@ const onUpdate = (cur) => {
       </template>
     </Header>
 
+    <DropdownMenu>
+      <DropdownItem :options="sortActionsList" v-model="sortActions" />
+      <DropdownItem :options="sortCompleteList" v-model="sortComplete" />
+    </DropdownMenu>
+
     <div class="scroll-box">
       <List v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-        <SwipeCell v-for="item in todoList" key="_id">
+        <SwipeCell v-for="item in todoList" :key="item.id">
           <template #left>
             <Button
               class="swiper-button"
@@ -104,7 +163,7 @@ const onUpdate = (cur) => {
               square
               @click.stop.prevent="onUpdate(item)"
             >修改</Button>
-            <Button class="swiper-button" type="danger" square>删除</Button>
+            <Button class="swiper-button" type="danger" square @click="onDel(item)">删除</Button>
           </template>
         </SwipeCell>
       </List>
@@ -145,7 +204,7 @@ const onUpdate = (cur) => {
 <style scoped>
 .scroll-box {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 48px);
 }
 
 .fixed-add {
