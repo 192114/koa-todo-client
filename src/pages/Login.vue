@@ -1,10 +1,11 @@
 <script setup>
 import {ref} from "vue"
 import {Button, Field, Notify } from "vant"
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import request from '../utils/request'
 
 const router = useRouter()
+const route = useRoute()
 
 const username = ref("")
 const password = ref("")
@@ -39,7 +40,13 @@ const onLogin = async () => {
 
   if (data.code === 0) {
     Notify({ type: 'success', message: '登录成功' })
-    router.push('/list')
+    const { redirect } = route.query
+    if (redirect) {
+      const target = decodeURIComponent(redirect)
+      router.push(target)
+    } else {
+      router.push('/list')
+    }
   } else {
     Notify({ type: 'warning', message: data.msg })
   }

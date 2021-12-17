@@ -1,6 +1,6 @@
 import {createApp} from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import { getCookie } from './utils/cookiejs'
+import Cookies from 'js-cookie'
 import App from './App.vue'
 
 // 动态导入
@@ -18,26 +18,32 @@ const routes = [
   {
     path: '/login',
     component: Login,
+    name: 'login',
   },
   {
     path: '/register',
     component: Register,
+    name: 'register',
   },
   {
     path: '/userInfo',
     component: UserInfo,
+    name: 'userInfo',
   },
   {
     path: '/list',
     component: TodoList,
+    name: 'list',
   },
   {
     path: '/add',
     component: EditTodo,
+    name: 'add',
   },
   {
     path: '/edit/:id',
     component: EditTodo,
+    name: 'edit',
   },
 ]
 
@@ -47,22 +53,21 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // const haveSession = getCookie('session_id')
-  // if (haveSession) {
-  //   next()
-  // } else {
-  //   if (to.name === 'login') {
-  //     next()
-  //     return
-  //   }
+  const haveSession = Cookies.get('session_id')
+  
+  if (!haveSession && to.name !== 'login') {
+    // 重定向到login
+    next({
+      path: '/login',
+      query: {
+        redirect: encodeURIComponent(to.fullPath),
+      }
+    })
 
-  //   next({
-  //     path: '/login',
-  //     query: {
-  //       redirect: to.fullPath,
-  //     }
-  //   })
-  // }
+    return
+  } 
+
+  next()
 })
 
 const app = createApp(App)

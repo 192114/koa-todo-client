@@ -1,7 +1,6 @@
 import axios from "axios"
 import { Dialog } from "vant"
-
-import { delCookie } from "./cookiejs"
+import Cookies from 'js-cookie'
 
 const axiosInstance = axios.create({
   timeout: 10000,
@@ -15,8 +14,8 @@ axiosInstance.interceptors.response.use((response) => {
   const { data } = response;
   if (data.code !== 0) {
     Dialog({ message: data.msg }).then(() => {
-      if (code === 401) {
-        delCookie('session_id')
+      if (data.code === 401) {
+        Cookies.remove('session_id')
       }
     });
   }
