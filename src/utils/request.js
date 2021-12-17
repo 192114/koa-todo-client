@@ -2,6 +2,8 @@ import axios from "axios"
 import { Dialog } from "vant"
 import Cookies from 'js-cookie'
 
+import router from '../routes'
+
 const axiosInstance = axios.create({
   timeout: 10000,
 });
@@ -16,8 +18,16 @@ axiosInstance.interceptors.response.use((response) => {
     Dialog({ message: data.msg }).then(() => {
       if (data.code === 401) {
         Cookies.remove('session_id')
+        const curFullPath = sessionStorage.getItem('curFullPath') || ''
+        router.push({
+          path: '/login',
+          replace: true,
+          query: {
+            redirect: encodeURIComponent(curFullPath)
+          }
+        })
       }
-    });
+    })
   }
 
   return data;
