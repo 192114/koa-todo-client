@@ -41,6 +41,7 @@ const onLogin = async () => {
   if (data.code === 0) {
     Notify({ type: 'success', message: '登录成功' })
     const { redirect } = route.query
+    console.log(redirect)
     if (redirect) {
       const target = decodeURIComponent(redirect)
       router.push(target)

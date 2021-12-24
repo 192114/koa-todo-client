@@ -25,6 +25,10 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
+body {
+  overflow: hidden;
+}
+
 ::-webkit-scrollbar {
   width: 0;
   background: transparent;

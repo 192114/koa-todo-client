@@ -41,6 +41,7 @@ const sortComplete = ref(null)
 const todoList = ref([])
 const loading = ref(false)
 const finished = ref(false)
+const start = ref(0)
 
 const curTodoItem = ref({})
 const maskShow = ref(false)
@@ -49,6 +50,8 @@ const onLoad = async () => {
   const param = {
     complete: sortComplete.value,
     importanceValue: sortActions.value,
+    start: start.value,
+    limit: 10,
   }
 
   loading.value = true
@@ -56,15 +59,30 @@ const onLoad = async () => {
   const data = await request.post('/api/auth/todo/query', param)
 
   if (data.code === 0) {
-    todoList.value = data.data
+    if(start.value === 0) {
+      todoList.value = data.data
+    } else {
+      todoList.value = [...todoList.value, ...data.data]
+    }
   }
 
   loading.value = false
+
+  finished.value = data.data.length < 10
 }
 
 watch([sortComplete, sortActions], () => {
+  start.value = 0
   onLoad()
 })
+
+const onPullup = () => {
+  if (finished.value) {
+    return
+  }
+  onLoad()
+  start.value += 10
+}
 
 const goUpdateInfo = () => {
   router.push('/userInfo')
@@ -93,7 +111,8 @@ const onComplete = (cur) => {
         const data = await request.post('/api/auth/todo/update', param)
 
         if (data.code === 0) {
-          todoList.value = todoList.value.filter(item => item.id !== cur.id)
+          cur.complete = 1
+          todoList.value = [...todoList.value]
         }
       }
       return true
@@ -143,7 +162,7 @@ const onDel = (cur) => {
     </DropdownMenu>
 
     <div class="scroll-box">
-      <List v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <List v-model="loading" :finished="finished" finished-text="没有更多了" @load="onPullup" offset="0">
         <SwipeCell v-for="item in todoList" :key="item.id">
           <template #left>
             <Button
@@ -153,7 +172,18 @@ const onDel = (cur) => {
               @click.stop.prevent="onComplete(item)"
             >完成</Button>
           </template>
-          <Cell square :title="item.title" :label="item.deadline" @click="viewDetail(item)">
+          <Cell 
+            square 
+            :title="item.title" 
+            :label="item.deadline" 
+            @click="viewDetail(item)"
+          >
+            <template v-slot:icon v-if="item.complete === 1">
+              <Icon name="success" color="#4fc08d" size="20" />
+            </template>
+            <template v-slot:icon v-if="item.complete !== 1 && item.isDelay === '1'">
+              <Icon name="cross" color="#ee0a24" size="20" />
+            </template>
             <Tag :type="importanceValueToColorMap[item.importanceValue]">{{item.importanceName}}</Tag>
           </Cell>
           <template #right>
@@ -207,6 +237,8 @@ const onDel = (cur) => {
   width: 100%;
   height: calc(100% - 60px);
   margin-top: 6px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .fixed-add {
