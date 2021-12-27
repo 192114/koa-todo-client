@@ -42,14 +42,14 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/mytodo/'),
   routes,
 })
 
 router.beforeEach((to, from, next) => {
   const haveSession = Cookies.get('session_id')
   
-  if (!haveSession && to.name !== 'login') {
+  if (!haveSession && to.name !== 'login' && to.name !== 'register') {
     // 重定向到login
     next({
       path: '/login',
